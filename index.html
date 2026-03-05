@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>仲暘有限公司 | 現代醫療輔助設備</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#2a5883",
+          "accent-coral": "#ff7f50",
+          "background-light": "#f6f7f8",
+          "background-dark": "#14191e",
+        },
+        fontFamily: { "display": ["Inter", "sans-serif"] },
+        borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+      },
+    },
+  }
+</script>
+<style>
+  .glass-nav {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+</style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+
+<!-- ========== 導覽列 ========== -->
+<header class="sticky top-0 z-50 glass-nav border-b border-primary/10 px-4 md:px-10 lg:px-20 py-3">
+  <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+    <!-- Logo（公司名稱從 config.js 載入） -->
+    <div class="flex items-center gap-3 shrink-0">
+      <div class="bg-primary text-white p-1.5 rounded-lg">
+        <span class="material-symbols-outlined !text-2xl">medical_services</span>
+      </div>
+      <h1 class="text-primary font-black text-xl tracking-tight hidden sm:block">
+        <span id="nav-company-name"></span>
+        <span id="nav-company-suffix" class="text-slate-700 dark:text-slate-300 font-bold"></span>
+      </h1>
+    </div>
+    <!-- 搜尋框 -->
+    <div class="flex-1 max-w-md hidden md:block">
+      <div class="relative group">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">search</span>
+        <input class="w-full bg-primary/5 border-none focus:ring-2 focus:ring-primary/20 rounded-xl pl-10 py-2 text-sm" placeholder="搜尋行動輔具、健康保健..." type="text"/>
+      </div>
+    </div>
+    <!-- 導覽選單 -->
+    <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-slate-600 dark:text-slate-400">
+      <a class="hover:text-primary transition-colors" href="#">行動輔具</a>
+      <a class="hover:text-primary transition-colors" href="#">醫療器材</a>
+      <a class="hover:text-primary transition-colors" href="#">生活照護</a>
+      <a class="hover:text-primary transition-colors" href="#">健康保健</a>
+    </nav>
+    <!-- 購物車 -->
+    <div class="flex items-center gap-2">
+      <button class="p-2 hover:bg-primary/10 rounded-full transition-colors relative">
+        <span class="material-symbols-outlined text-slate-700 dark:text-slate-300">shopping_cart</span>
+        <span class="absolute top-1 right-1 bg-accent-coral text-white text-[10px] font-bold px-1.5 rounded-full">3</span>
+      </button>
+      <button class="p-2 hover:bg-primary/10 rounded-full transition-colors md:hidden">
+        <span class="material-symbols-outlined text-slate-700 dark:text-slate-300">search</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-6 md:py-10">
+
+  <!-- ========== Hero 橫幅 ========== -->
+  <section class="relative rounded-xl overflow-hidden min-h-[500px] flex items-center group">
+    <div class="absolute inset-0 z-0">
+      <img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+           alt="Elderly person using a modern walker with a smiling caregiver"
+           src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0OZVUpVNkGX4ARaPleV__HAo6ke21exI50HnkPgFTXJa6gPHeqNSAFuya0K1Xw0fBfUOXHDGfXexE99Qoepi5Do4pXAyFLa24e63-KV_KrDIPlBpgGDeOrFTAi76L4dr4lkd91wkwj7NPC569xkbZhEHFzrPkGEjItm3Z9AQJMNeekQMNEfpMOP-Sl2FpratR-KQMgUxSDCfWtODLgklGpyImvEtImZBgWnOXAAnhq0AOfBTdb8VhTNnRZro0cveNMUWJDBKf-kD6"/>
+      <div class="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-slate-900/40 to-transparent"></div>
+    </div>
+    <div class="relative z-10 px-8 md:px-16 max-w-2xl">
+      <span class="inline-block px-3 py-1 bg-accent-coral/20 text-accent-coral text-xs font-bold uppercase tracking-widest rounded-full mb-4">優質照護解決方案</span>
+      <h2 class="text-4xl md:text-6xl font-black text-white leading-tight mb-6">科技守護，讓<span class="text-accent-coral">自主生活</span>更美好</h2>
+      <p class="text-slate-200 text-lg mb-8 leading-relaxed">探索我們精選的高科技醫療輔助設備，為您帶來極致的舒適、安全與行動力。</p>
+      <div class="flex flex-wrap gap-4">
+        <button class="bg-accent-coral hover:bg-accent-coral/90 text-white font-bold py-4 px-10 rounded-xl transition-all shadow-lg shadow-accent-coral/30 flex items-center gap-2">
+          立即選購 <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+        <button class="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-bold py-4 px-10 rounded-xl transition-all border border-white/20">瀏覽目錄</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 商品分類 ========== -->
+  <section class="mt-16">
+    <div class="flex items-end justify-between mb-8">
+      <div>
+        <h3 class="text-2xl font-bold text-slate-900 dark:text-white">依類別選購</h3>
+        <p class="text-slate-500 dark:text-slate-400 mt-1">為生活的每個階段提供專業設備。</p>
+      </div>
+      <a class="text-primary font-bold text-sm flex items-center gap-1 hover:underline" href="#">查看全部 <span class="material-symbols-outlined !text-sm">chevron_right</span></a>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-primary/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
+        <div class="bg-primary/10 text-primary w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
+          <span class="material-symbols-outlined !text-3xl">accessible</span>
+        </div>
+        <h4 class="font-bold text-lg mb-1">行動輔具</h4>
+        <p class="text-slate-500 dark:text-slate-400 text-sm">助行器、輪椅及輔具</p>
+      </div>
+      <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-primary/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
+        <div class="bg-primary/10 text-primary w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
+          <span class="material-symbols-outlined !text-3xl">medical_information</span>
+        </div>
+        <h4 class="font-bold text-lg mb-1">醫療器材</h4>
+        <p class="text-slate-500 dark:text-slate-400 text-sm">專業檢測設備</p>
+      </div>
+      <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-primary/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
+        <div class="bg-primary/10 text-primary w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
+          <span class="material-symbols-outlined !text-3xl">home_health</span>
+        </div>
+        <h4 class="font-bold text-lg mb-1">生活照護</h4>
+        <p class="text-slate-500 dark:text-slate-400 text-sm">居家必備與個人衛生</p>
+      </div>
+      <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-primary/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
+        <div class="bg-primary/10 text-primary w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
+          <span class="material-symbols-outlined !text-3xl">monitor_heart</span>
+        </div>
+        <h4 class="font-bold text-lg mb-1">健康保健</h4>
+        <p class="text-slate-500 dark:text-slate-400 text-sm">關鍵監測與營養補充</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 精選產品（由 config.js 動態產生） ========== -->
+  <section class="mt-20">
+    <div class="flex items-end justify-between mb-8">
+      <div>
+        <h3 class="text-2xl font-bold text-slate-900 dark:text-white">精選產品</h3>
+        <p class="text-slate-500 dark:text-slate-400 mt-1">為獨立生活提供的頂級解決方案。</p>
+      </div>
+    </div>
+    <!-- 載入中 -->
+    <div id="products-loading" class="col-span-4 text-center py-16 text-slate-400">
+      <span class="material-symbols-outlined text-5xl">hourglass_empty</span>
+      <p class="mt-2">載入產品中...</p>
+    </div>
+    <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      <!-- 產品卡片由 Supabase 動態產生 -->
+    </div>
+  </section>
+
+</main>
+
+<!-- ========== 頁尾 ========== -->
+<footer class="bg-white dark:bg-slate-900 border-t border-primary/10 mt-20 px-4 md:px-10 lg:px-20 py-12">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+    <div class="col-span-1 md:col-span-1">
+      <div class="flex items-center gap-2 mb-6">
+        <div class="bg-primary text-white p-1 rounded">
+          <span class="material-symbols-outlined !text-xl">medical_services</span>
+        </div>
+        <span class="font-black text-lg">
+          <span id="footer-company-name"></span><span id="footer-company-suffix"></span>
+        </span>
+      </div>
+      <p id="footer-description" class="text-slate-500 text-sm leading-relaxed mb-6"></p>
+      <div class="flex gap-4">
+        <a class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all" href="#"><span class="material-symbols-outlined !text-sm">public</span></a>
+        <a id="footer-email-link" class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all" href="#"><span class="material-symbols-outlined !text-sm">alternate_email</span></a>
+      </div>
+    </div>
+    <div>
+      <h6 class="font-bold mb-6">選購</h6>
+      <ul class="space-y-4 text-sm text-slate-500 dark:text-slate-400">
+        <li><a class="hover:text-primary" href="#">行動輔具</a></li>
+        <li><a class="hover:text-primary" href="#">浴室安全</a></li>
+        <li><a class="hover:text-primary" href="#">醫療監測</a></li>
+        <li><a class="hover:text-primary" href="#">睡眠治療</a></li>
+      </ul>
+    </div>
+    <div>
+      <h6 class="font-bold mb-6">公司資訊</h6>
+      <ul class="space-y-4 text-sm text-slate-500 dark:text-slate-400">
+        <li><a class="hover:text-primary" href="#">關於我們</a></li>
+        <li><a class="hover:text-primary" href="#">照護指南</a></li>
+        <li><a class="hover:text-primary" href="#">運送資訊</a></li>
+        <li><a class="hover:text-primary" href="#">聯絡我們</a></li>
+      </ul>
+    </div>
+    <div>
+      <h6 class="font-bold mb-6">訂閱我們</h6>
+      <p class="text-sm text-slate-500 mb-4">訂閱我們的通訊，獲取健康小撇步與專屬優惠。</p>
+      <form class="flex gap-2">
+        <input class="bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm flex-1" placeholder="您的電子郵件" type="email"/>
+        <button class="bg-primary text-white px-4 py-2 rounded-lg font-bold text-sm">訂閱</button>
+      </form>
+      <div class="mt-8 flex gap-4">
+        <div class="bg-primary/5 p-1 rounded grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all"><span class="material-symbols-outlined !text-2xl">verified_user</span></div>
+        <div class="bg-primary/5 p-1 rounded grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all"><span class="material-symbols-outlined !text-2xl">security</span></div>
+        <div class="bg-primary/5 p-1 rounded grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all"><span class="material-symbols-outlined !text-2xl">credit_card</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto pt-12 mt-12 border-t border-slate-100 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+    <p>© <span id="footer-copyright"></span> <span id="footer-fullname"></span>. 版權所有。</p>
+    <div class="flex gap-6">
+      <a class="hover:text-slate-600" href="#">隱私政策</a>
+      <a class="hover:text-slate-600" href="#">服務條款</a>
+      <a class="hover:text-slate-600" href="#">無障礙說明</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ========== 載入設定檔 ========== -->
+<script src="config.js"></script>
+
+<!-- ========== 套用設定到頁面 ========== -->
+<script>
+  // --- 公司資訊 ---
+  const c = SITE_CONFIG.company;
+  document.getElementById("nav-company-name").textContent    = c.name;
+  document.getElementById("nav-company-suffix").textContent  = " " + c.nameSuffix;
+  document.getElementById("footer-company-name").textContent = c.name;
+  document.getElementById("footer-company-suffix").textContent = c.nameSuffix;
+  document.getElementById("footer-description").textContent  = c.description;
+  document.getElementById("footer-copyright").textContent    = c.copyright;
+  document.getElementById("footer-fullname").textContent     = c.name + c.nameSuffix;
+  document.getElementById("footer-email-link").href = "mailto:" + c.email;
+
+  // --- 工具函式 ---
+  function renderStars(rating) {
+    let html = "";
+    for (let i = 1; i <= 5; i++) {
+      const color = i <= rating ? "text-yellow-400" : "text-slate-300";
+      html += `<span class="material-symbols-outlined !text-sm ${color}">star</span>`;
+    }
+    return html;
+  }
+
+  function renderProductCard(p) {
+    const badgeColor = p.badge_type === "coral"
+      ? "bg-[#ff7f50] text-white"
+      : "bg-[#2a5883] text-white";
+    const badgeHTML = p.badge
+      ? `<span class="absolute top-3 left-3 ${badgeColor} text-[10px] font-bold px-2 py-1 rounded">${p.badge}</span>`
+      : "";
+    const imgSrc = p.image_url || "https://via.placeholder.com/400x400?text=暫無圖片";
+    const price = "NT$" + p.price.toLocaleString("zh-TW");
+    return `
+      <div class="bg-white dark:bg-slate-800 rounded-xl overflow-hidden border border-primary/5 group">
+        <div class="aspect-square relative overflow-hidden bg-slate-100">
+          <img class="w-full h-full object-cover transition-transform group-hover:scale-110"
+               alt="${p.name}" src="${imgSrc}"/>
+          ${badgeHTML}
+          <button class="absolute bottom-3 right-3 bg-white/90 backdrop-blur p-2 rounded-full text-primary hover:bg-primary hover:text-white transition-colors shadow-md">
+            <span class="material-symbols-outlined">favorite</span>
+          </button>
+        </div>
+        <div class="p-5">
+          <div class="flex items-center gap-1 mb-2">
+            ${renderStars(p.rating)}
+            <span class="text-xs text-slate-400 ml-1">(${p.reviews} 則評論)</span>
+          </div>
+          <h5 class="font-bold text-lg mb-1 group-hover:text-primary transition-colors">${p.name}</h5>
+          <p class="text-slate-500 dark:text-slate-400 text-sm mb-4 line-clamp-1">${p.description || ""}</p>
+          <div class="flex items-center justify-between">
+            <span class="text-2xl font-black text-slate-900 dark:text-white">${price}</span>
+            <button class="bg-primary/10 hover:bg-primary text-primary hover:text-white p-2 rounded-lg transition-all">
+              <span class="material-symbols-outlined">add_shopping_cart</span>
+            </button>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // --- 從 Supabase 載入產品 ---
+  async function loadProducts() {
+    const { createClient } = supabase;
+    const sb = createClient(SITE_CONFIG.supabase.url, SITE_CONFIG.supabase.anonKey);
+    const { data, error } = await sb
+      .from("products")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    document.getElementById("products-loading").style.display = "none";
+
+    if (error || !data || data.length === 0) return;
+
+    const grid = document.getElementById("product-grid");
+    data.forEach(p => grid.insertAdjacentHTML("beforeend", renderProductCard(p)));
+  }
+
+  loadProducts();
+</script>
+
+</body>
+</html>
