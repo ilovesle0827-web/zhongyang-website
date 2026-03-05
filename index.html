@@ -57,10 +57,10 @@
     </div>
     <!-- 導覽選單 -->
     <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-slate-600 dark:text-slate-400">
-      <a class="hover:text-primary transition-colors" href="#">行動輔具</a>
-      <a class="hover:text-primary transition-colors" href="#">醫療器材</a>
-      <a class="hover:text-primary transition-colors" href="#">生活照護</a>
-      <a class="hover:text-primary transition-colors" href="#">健康保健</a>
+      <a class="hover:text-primary transition-colors cursor-pointer" onclick="scrollToProducts()">行動輔具</a>
+      <a class="hover:text-primary transition-colors cursor-pointer" onclick="scrollToProducts()">醫療器材</a>
+      <a class="hover:text-primary transition-colors cursor-pointer" onclick="scrollToProducts()">生活照護</a>
+      <a class="hover:text-primary transition-colors cursor-pointer" onclick="scrollToProducts()">健康保健</a>
     </nav>
     <!-- 購物車 -->
     <div class="flex items-center gap-2">
@@ -90,16 +90,18 @@
       <h2 class="text-4xl md:text-6xl font-black text-white leading-tight mb-6">科技守護，讓<span class="text-accent-coral">自主生活</span>更美好</h2>
       <p class="text-slate-200 text-lg mb-8 leading-relaxed">探索我們精選的高科技醫療輔助設備，為您帶來極致的舒適、安全與行動力。</p>
       <div class="flex flex-wrap gap-4">
-        <button class="bg-accent-coral hover:bg-accent-coral/90 text-white font-bold py-4 px-10 rounded-xl transition-all shadow-lg shadow-accent-coral/30 flex items-center gap-2">
+        <button onclick="document.getElementById('featured-products').scrollIntoView({behavior:'smooth'})"
+          class="bg-accent-coral hover:bg-accent-coral/90 text-white font-bold py-4 px-10 rounded-xl transition-all shadow-lg shadow-accent-coral/30 flex items-center gap-2">
           立即選購 <span class="material-symbols-outlined">arrow_forward</span>
         </button>
-        <button class="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-bold py-4 px-10 rounded-xl transition-all border border-white/20">瀏覽目錄</button>
+        <button onclick="document.getElementById('categories').scrollIntoView({behavior:'smooth'})"
+          class="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-bold py-4 px-10 rounded-xl transition-all border border-white/20">瀏覽目錄</button>
       </div>
     </div>
   </section>
 
   <!-- ========== 商品分類 ========== -->
-  <section class="mt-16">
+  <section id="categories" class="mt-16">
     <div class="flex items-end justify-between mb-8">
       <div>
         <h3 class="text-2xl font-bold text-slate-900 dark:text-white">依類別選購</h3>
@@ -108,28 +110,28 @@
       <a class="text-primary font-bold text-sm flex items-center gap-1 hover:underline" href="#">查看全部 <span class="material-symbols-outlined !text-sm">chevron_right</span></a>
     </div>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-      <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-primary/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
+      <div onclick="scrollToProducts()" class="cursor-pointer bg-white dark:bg-slate-800 p-6 rounded-xl border border-primary/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
         <div class="bg-primary/10 text-primary w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
           <span class="material-symbols-outlined !text-3xl">accessible</span>
         </div>
         <h4 class="font-bold text-lg mb-1">行動輔具</h4>
         <p class="text-slate-500 dark:text-slate-400 text-sm">助行器、輪椅及輔具</p>
       </div>
-      <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-primary/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
+      <div onclick="scrollToProducts()" class="cursor-pointer bg-white dark:bg-slate-800 p-6 rounded-xl border border-primary/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
         <div class="bg-primary/10 text-primary w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
           <span class="material-symbols-outlined !text-3xl">medical_information</span>
         </div>
         <h4 class="font-bold text-lg mb-1">醫療器材</h4>
         <p class="text-slate-500 dark:text-slate-400 text-sm">專業檢測設備</p>
       </div>
-      <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-primary/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
+      <div onclick="scrollToProducts()" class="cursor-pointer bg-white dark:bg-slate-800 p-6 rounded-xl border border-primary/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
         <div class="bg-primary/10 text-primary w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
           <span class="material-symbols-outlined !text-3xl">home_health</span>
         </div>
         <h4 class="font-bold text-lg mb-1">生活照護</h4>
         <p class="text-slate-500 dark:text-slate-400 text-sm">居家必備與個人衛生</p>
       </div>
-      <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-primary/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
+      <div onclick="scrollToProducts()" class="cursor-pointer bg-white dark:bg-slate-800 p-6 rounded-xl border border-primary/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
         <div class="bg-primary/10 text-primary w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
           <span class="material-symbols-outlined !text-3xl">monitor_heart</span>
         </div>
@@ -140,7 +142,7 @@
   </section>
 
   <!-- ========== 精選產品（由 config.js 動態產生） ========== -->
-  <section class="mt-20">
+  <section id="featured-products" class="mt-20">
     <div class="flex items-end justify-between mb-8">
       <div>
         <h3 class="text-2xl font-bold text-slate-900 dark:text-white">精選產品</h3>
@@ -219,6 +221,12 @@
   </div>
 </footer>
 
+<!-- ========== Toast 通知元素 ========== -->
+<div id="toast" class="fixed bottom-6 right-6 z-[999] flex items-center gap-3 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl transition-all duration-300 opacity-0 translate-y-4 pointer-events-none">
+  <span class="material-symbols-outlined text-green-400">check_circle</span>
+  <span id="toast-msg">已加入購物車</span>
+</div>
+
 <!-- ========== 載入設定檔 ========== -->
 <script src="config.js"></script>
 
@@ -273,7 +281,7 @@
           <p class="text-slate-500 dark:text-slate-400 text-sm mb-4 line-clamp-1">${p.description || ""}</p>
           <div class="flex items-center justify-between">
             <span class="text-2xl font-black text-slate-900 dark:text-white">${price}</span>
-            <button class="bg-primary/10 hover:bg-primary text-primary hover:text-white p-2 rounded-lg transition-all">
+            <button onclick="addToCart('${p.name}')" class="bg-primary/10 hover:bg-primary text-primary hover:text-white p-2 rounded-lg transition-all">
               <span class="material-symbols-outlined">add_shopping_cart</span>
             </button>
           </div>
@@ -299,6 +307,35 @@
   }
 
   loadProducts();
+
+  // --- 捲動到產品區 ---
+  function scrollToProducts() {
+    document.getElementById("featured-products").scrollIntoView({ behavior: "smooth" });
+  }
+
+  // --- Toast 通知 ---
+  let toastTimer;
+  function showToast(msg) {
+    const toast = document.getElementById("toast");
+    document.getElementById("toast-msg").textContent = msg;
+    toast.classList.remove("opacity-0", "translate-y-4", "pointer-events-none");
+    toast.classList.add("opacity-100", "translate-y-0");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.classList.add("opacity-0", "translate-y-4", "pointer-events-none");
+      toast.classList.remove("opacity-100", "translate-y-0");
+    }, 2500);
+  }
+
+  // --- 加入購物車 ---
+  let cartCount = 0;
+  function addToCart(name) {
+    cartCount++;
+    // 更新購物車數字
+    const badge = document.querySelector("header .bg-accent-coral");
+    if (badge) badge.textContent = cartCount;
+    showToast("「" + name + "」已加入購物車！");
+  }
 </script>
 
 </body>
