@@ -15,6 +15,18 @@ const SITE_CONFIG = {
   },
 
   // ----------------------------------------------------------
+  //  Firebase 雲端資料庫設定（連接庫存管理系統）
+  // ----------------------------------------------------------
+  firebase: {
+    apiKey: "AIzaSyBFKgLSC6e3-KNvleB69vXAxvPbYrGqgRk",
+    authDomain: "zhongyang-inventory-a33ec.firebaseapp.com",
+    projectId: "zhongyang-inventory-a33ec",
+    storageBucket: "zhongyang-inventory-a33ec.firebasestorage.app",
+    messagingSenderId: "465814216226",
+    appId: "1:465814216226:web:a0d9cd0770bf9f83eaf47b",
+  },
+
+  // ----------------------------------------------------------
   //  後台管理密碼（進入 admin.html 時需要輸入）
   // ----------------------------------------------------------
   adminPassword: "admin1234",   // ← 請改成你自己的密碼！
