@@ -25,9 +25,9 @@ const SITE_CONFIG = {
   company: {
     name: "仲暘",                  // 公司名稱（前半）
     nameSuffix: "有限公司",          // 公司名稱（後半）
-    founded: "1998",                // 成立年份
+    founded: "2020",                // 成立年份
     copyright: "2024",              // 版權年份
-    description: "自1998年以來，致力於提供現代化解決方案與專業照護產品。守護您的獨立生活是我們的首要任務。",
+    description: "自2020年以來，致力於提供現代化解決方案與專業照護產品。守護您的獨立生活是我們的首要任務。",
     email: "service@zhongyang.com.tw",  // 聯絡信箱
     phone: "02-1234-5678",              // 聯絡電話
   },
