@@ -60,8 +60,14 @@
       <a class="hover:text-primary transition-colors cursor-pointer" onclick="scrollToProducts()">生活照護</a>
       <a class="hover:text-primary transition-colors cursor-pointer" onclick="scrollToProducts()">健康保健</a>
     </nav>
-    <!-- 購物車 -->
-    <div class="flex items-center gap-2">
+    <!-- 購物車 + 帳號 -->
+    <div class="flex items-center gap-1">
+      <!-- 帳號按鈕（未登入/已登入動態切換） -->
+      <a id="account-btn" href="login.html" class="p-2 hover:bg-primary/10 rounded-full transition-colors relative flex items-center">
+        <span id="account-icon" class="material-symbols-outlined text-slate-700 dark:text-slate-300">person</span>
+        <span id="account-dot" class="absolute top-1 right-1 w-2.5 h-2.5 bg-green-500 rounded-full hidden border-2 border-white"></span>
+      </a>
+      <!-- 購物車 -->
       <a href="cart.html" class="p-2 hover:bg-primary/10 rounded-full transition-colors relative flex items-center">
         <span class="material-symbols-outlined text-slate-700 dark:text-slate-300">shopping_cart</span>
         <span id="cart-badge" class="absolute top-1 right-1 bg-accent-coral text-white text-[10px] font-bold px-1.5 rounded-full hidden">0</span>
@@ -353,6 +359,18 @@
   }
   // 頁面載入時更新購物車數字
   updateCartBadge();
+
+  // --- 帳號按鈕：檢查登入狀態 ---
+  (async () => {
+    const { createClient: _createClient } = supabase;
+    const _sb = _createClient(SITE_CONFIG.supabase.url, SITE_CONFIG.supabase.anonKey);
+    const { data: { session } } = await _sb.auth.getSession();
+    if (session) {
+      document.getElementById("account-btn").href  = "my-account.html";
+      document.getElementById("account-icon").textContent = "account_circle";
+      document.getElementById("account-dot").classList.remove("hidden");
+    }
+  })();
 </script>
 
 </body>

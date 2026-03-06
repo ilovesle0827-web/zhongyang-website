@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>登入 | 仲暘有限公司</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#2a5883",
+          "accent-coral": "#ff7f50",
+        },
+        fontFamily: { "display": ["Inter", "sans-serif"] },
+      }
+    }
+  }
+</script>
+</head>
+<body class="bg-slate-100 font-display min-h-screen flex items-center justify-center px-4 py-12">
+
+<div class="w-full max-w-4xl">
+
+  <!-- 標題 -->
+  <div class="text-center mb-10">
+    <a href="index.html" class="inline-flex items-center gap-3 mb-4">
+      <img src="LOGO.png" alt="仲暘有限公司 Logo" class="h-12 w-auto object-contain"/>
+    </a>
+    <h1 class="text-3xl font-black text-slate-800">歡迎回來</h1>
+    <p class="text-slate-500 mt-1">請選擇您的身份</p>
+  </div>
+
+  <!-- 兩張卡片 -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    <!-- ===== 顧客登入卡片 ===== -->
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+      <div class="bg-primary px-6 py-5">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+            <span class="material-symbols-outlined text-white">person</span>
+          </div>
+          <div>
+            <h2 class="text-white font-black text-lg leading-tight">顧客登入</h2>
+            <p class="text-white/70 text-xs">查看訂單 · 快速重購 · 儲存地址</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-6">
+        <!-- 登入 / 註冊 切換 -->
+        <div class="flex bg-slate-100 rounded-xl p-1 mb-6">
+          <button id="tab-login" onclick="switchTab('login')"
+            class="flex-1 py-2 rounded-lg text-sm font-bold transition-all bg-white text-primary shadow-sm">
+            登入
+          </button>
+          <button id="tab-register" onclick="switchTab('register')"
+            class="flex-1 py-2 rounded-lg text-sm font-bold transition-all text-slate-500">
+            註冊新帳號
+          </button>
+        </div>
+
+        <!-- 登入表單 -->
+        <div id="form-login">
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1.5">電子郵件</label>
+              <input id="login-email" type="email" placeholder="your@email.com" autocomplete="email"
+                class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"/>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1.5">密碼</label>
+              <input id="login-password" type="password" placeholder="••••••••" autocomplete="current-password"
+                class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"/>
+            </div>
+            <p id="login-error" class="text-red-500 text-xs hidden"></p>
+            <button onclick="doLogin()"
+              class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:bg-primary/90 transition flex items-center justify-center gap-2">
+              <span class="material-symbols-outlined text-base">login</span>
+              登入
+            </button>
+          </div>
+        </div>
+
+        <!-- 註冊表單 -->
+        <div id="form-register" class="hidden">
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1.5">電子郵件</label>
+              <input id="reg-email" type="email" placeholder="your@email.com" autocomplete="email"
+                class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"/>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1.5">密碼（至少 6 個字元）</label>
+              <input id="reg-password" type="password" placeholder="••••••••" autocomplete="new-password"
+                class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"/>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1.5">確認密碼</label>
+              <input id="reg-password2" type="password" placeholder="••••••••" autocomplete="new-password"
+                class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"/>
+            </div>
+            <p id="reg-error" class="text-red-500 text-xs hidden"></p>
+            <button onclick="doRegister()"
+              class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:bg-primary/90 transition flex items-center justify-center gap-2">
+              <span class="material-symbols-outlined text-base">person_add</span>
+              建立帳號
+            </button>
+          </div>
+        </div>
+
+        <!-- 註冊成功提示 -->
+        <div id="reg-success" class="hidden text-center py-4">
+          <span class="material-symbols-outlined text-4xl text-green-500">mark_email_read</span>
+          <p class="font-bold text-slate-800 mt-2">請到信箱確認驗證信！</p>
+          <p class="text-slate-500 text-sm mt-1">驗證後即可登入</p>
+          <button onclick="switchTab('login')" class="mt-4 text-primary text-sm font-bold hover:underline">
+            前往登入 →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 店家後台卡片 ===== -->
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col">
+      <div class="bg-slate-800 px-6 py-5">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+            <span class="material-symbols-outlined text-white">admin_panel_settings</span>
+          </div>
+          <div>
+            <h2 class="text-white font-black text-lg leading-tight">店家後台</h2>
+            <p class="text-white/70 text-xs">管理產品 · 查看訂單 · 更新庫存</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-6 flex-1 flex flex-col justify-between">
+        <div class="space-y-4 text-sm text-slate-500">
+          <div class="flex items-start gap-3">
+            <span class="material-symbols-outlined text-primary mt-0.5">inventory_2</span>
+            <span>上架商品、編輯售價與圖片</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="material-symbols-outlined text-primary mt-0.5">shopping_bag</span>
+            <span>查看顧客訂單</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="material-symbols-outlined text-primary mt-0.5">bar_chart</span>
+            <span>連結庫存管理系統</span>
+          </div>
+        </div>
+
+        <a href="admin.html"
+          class="mt-8 w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-base">lock_open</span>
+          進入後台管理
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 返回首頁 -->
+  <p class="text-center mt-8 text-slate-400 text-sm">
+    <a href="index.html" class="hover:text-primary transition-colors">← 返回購物首頁</a>
+  </p>
+
+</div>
+
+<script src="config.js"></script>
+<script>
+const { createClient } = supabase;
+const sb = createClient(SITE_CONFIG.supabase.url, SITE_CONFIG.supabase.anonKey);
+
+// 若已登入直接跳帳號頁
+sb.auth.getSession().then(({ data: { session } }) => {
+  if (session) window.location.href = "my-account.html";
+});
+
+function switchTab(tab) {
+  const isLogin = tab === "login";
+  document.getElementById("tab-login").className = isLogin
+    ? "flex-1 py-2 rounded-lg text-sm font-bold transition-all bg-white text-primary shadow-sm"
+    : "flex-1 py-2 rounded-lg text-sm font-bold transition-all text-slate-500";
+  document.getElementById("tab-register").className = isLogin
+    ? "flex-1 py-2 rounded-lg text-sm font-bold transition-all text-slate-500"
+    : "flex-1 py-2 rounded-lg text-sm font-bold transition-all bg-white text-primary shadow-sm";
+  document.getElementById("form-login").classList.toggle("hidden", !isLogin);
+  document.getElementById("form-register").classList.toggle("hidden", isLogin);
+  document.getElementById("reg-success").classList.add("hidden");
+}
+
+async function doLogin() {
+  const email    = document.getElementById("login-email").value.trim();
+  const password = document.getElementById("login-password").value;
+  const errEl    = document.getElementById("login-error");
+  errEl.classList.add("hidden");
+
+  if (!email || !password) {
+    errEl.textContent = "請填寫電子郵件與密碼";
+    errEl.classList.remove("hidden");
+    return;
+  }
+
+  const { error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) {
+    errEl.textContent = error.message.includes("Invalid") ? "電子郵件或密碼錯誤" : error.message;
+    errEl.classList.remove("hidden");
+    return;
+  }
+
+  window.location.href = "my-account.html";
+}
+
+async function doRegister() {
+  const email    = document.getElementById("reg-email").value.trim();
+  const password = document.getElementById("reg-password").value;
+  const password2= document.getElementById("reg-password2").value;
+  const errEl    = document.getElementById("reg-error");
+  errEl.classList.add("hidden");
+
+  if (!email || !password) {
+    errEl.textContent = "請填寫電子郵件與密碼";
+    errEl.classList.remove("hidden");
+    return;
+  }
+  if (password.length < 6) {
+    errEl.textContent = "密碼至少需要 6 個字元";
+    errEl.classList.remove("hidden");
+    return;
+  }
+  if (password !== password2) {
+    errEl.textContent = "兩次密碼不一致";
+    errEl.classList.remove("hidden");
+    return;
+  }
+
+  const { error } = await sb.auth.signUp({ email, password });
+  if (error) {
+    errEl.textContent = error.message;
+    errEl.classList.remove("hidden");
+    return;
+  }
+
+  document.getElementById("form-register").classList.add("hidden");
+  document.getElementById("reg-success").classList.remove("hidden");
+}
+
+// Enter 鍵送出
+document.addEventListener("keydown", e => {
+  if (e.key !== "Enter") return;
+  if (!document.getElementById("form-register").classList.contains("hidden")) {
+    doRegister();
+  } else if (!document.getElementById("form-login").classList.contains("hidden")) {
+    doLogin();
+  }
+});
+</script>
+
+</body>
+</html>
