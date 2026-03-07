@@ -1,306 +1,346 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
+
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>後台管理 | 仲暘有限公司</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: { primary: "#2a5883", coral: "#ff7f50" },
-        fontFamily: { display: ["Inter","sans-serif"] },
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>後台管理 | 仲暘有限公司</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { primary: "#2a5883", coral: "#ff7f50" },
+          fontFamily: { display: ["Inter", "sans-serif"] },
+        }
       }
     }
-  }
-</script>
+  </script>
 </head>
+
 <body class="bg-slate-100 font-display min-h-screen">
 
-<!-- ===== 登入畫面 ===== -->
-<div id="login-screen" class="min-h-screen flex items-center justify-center">
-  <div class="bg-white rounded-2xl shadow-xl p-10 w-full max-w-sm text-center">
-    <div class="bg-primary text-white w-14 h-14 rounded-xl flex items-center justify-center mx-auto mb-4">
-      <span class="material-symbols-outlined text-3xl">lock</span>
+  <!-- ===== 登入畫面 ===== -->
+  <div id="login-screen" class="min-h-screen flex items-center justify-center">
+    <div class="bg-white rounded-2xl shadow-xl p-10 w-full max-w-sm text-center">
+      <div class="bg-primary text-white w-14 h-14 rounded-xl flex items-center justify-center mx-auto mb-4">
+        <span class="material-symbols-outlined text-3xl">lock</span>
+      </div>
+      <h1 class="text-2xl font-black text-slate-800 mb-1">後台管理</h1>
+      <p class="text-slate-400 text-sm mb-6">仲暘有限公司</p>
+      <input id="admin-email" type="email" placeholder="管理員電子郵件" autocomplete="email"
+        class="w-full border border-slate-200 rounded-xl px-4 py-3 mb-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+      <input id="admin-password" type="password" placeholder="密碼" autocomplete="current-password"
+        class="w-full border border-slate-200 rounded-xl px-4 py-3 mb-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+      <p id="pw-error" class="text-red-500 text-xs mb-3 hidden"></p>
+      <button onclick="doLogin()"
+        class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:bg-primary/90 transition">
+        登入
+      </button>
     </div>
-    <h1 class="text-2xl font-black text-slate-800 mb-1">後台管理</h1>
-    <p class="text-slate-400 text-sm mb-6">仲暘有限公司</p>
-    <input id="pw-input" type="password" placeholder="請輸入管理密碼"
-      class="w-full border border-slate-200 rounded-xl px-4 py-3 mb-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"/>
-    <p id="pw-error" class="text-red-500 text-xs mb-3 hidden">密碼錯誤，請再試一次</p>
-    <button onclick="doLogin()"
-      class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:bg-primary/90 transition">
-      登入
-    </button>
   </div>
-</div>
 
-<!-- ===== 主後台 ===== -->
-<div id="admin-panel" class="hidden">
-  <!-- 頂部 -->
-  <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
-    <div class="flex items-center gap-3">
-      <div class="bg-primary text-white p-1.5 rounded-lg">
-        <span class="material-symbols-outlined text-xl">medical_services</span>
-      </div>
-      <span class="font-black text-primary text-lg">仲暘後台管理</span>
-    </div>
-    <div class="flex items-center gap-3">
-      <a href="index.html" target="_blank"
-        class="text-sm text-primary flex items-center gap-1 hover:underline">
-        <span class="material-symbols-outlined text-base">open_in_new</span>前往網站
-      </a>
-      <button onclick="doLogout()"
-        class="text-sm text-slate-500 flex items-center gap-1 hover:text-red-500">
-        <span class="material-symbols-outlined text-base">logout</span>登出
-      </button>
-    </div>
-  </header>
-
-  <main class="max-w-5xl mx-auto px-4 py-8">
-
-    <!-- 新增產品按鈕 -->
-    <div class="flex items-center justify-between mb-6">
-      <h2 class="text-xl font-bold text-slate-800">產品管理</h2>
-      <button onclick="openForm()"
-        class="bg-primary text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-primary/90 transition">
-        <span class="material-symbols-outlined text-base">add</span>新增產品
-      </button>
-    </div>
-
-    <!-- 載入中提示 -->
-    <div id="loading" class="text-center py-20 text-slate-400">
-      <span class="material-symbols-outlined text-5xl animate-spin">refresh</span>
-      <p class="mt-3">載入中...</p>
-    </div>
-
-    <!-- 產品列表 -->
-    <div id="product-list" class="hidden grid grid-cols-1 gap-4"></div>
-
-    <!-- 空白提示 -->
-    <div id="empty-state" class="hidden text-center py-20 text-slate-400">
-      <span class="material-symbols-outlined text-5xl">inventory_2</span>
-      <p class="mt-3 text-lg font-medium">尚無產品</p>
-      <p class="text-sm">點上方「新增產品」來上架第一個商品吧！</p>
-    </div>
-
-  </main>
-</div>
-
-<!-- ===== 新增/編輯 表單 Modal ===== -->
-<div id="modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-10 pb-10 overflow-y-auto">
-  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4">
-    <div class="flex items-center justify-between px-6 py-4 border-b">
-      <h3 id="modal-title" class="text-lg font-bold text-slate-800">新增產品</h3>
-      <button onclick="closeForm()" class="text-slate-400 hover:text-slate-700">
-        <span class="material-symbols-outlined">close</span>
-      </button>
-    </div>
-    <form id="product-form" onsubmit="saveProduct(event)" class="px-6 py-5 space-y-4">
-      <input type="hidden" id="edit-id"/>
-
-      <!-- 產品名稱 -->
-      <div>
-        <label class="block text-sm font-semibold text-slate-700 mb-1">產品名稱 *</label>
-        <input id="f-name" type="text" required placeholder="例：碳纖維輕便助行車"
-          class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"/>
-      </div>
-
-      <!-- 產品簡介 -->
-      <div>
-        <label class="block text-sm font-semibold text-slate-700 mb-1">產品簡介</label>
-        <textarea id="f-desc" rows="2" placeholder="簡短描述產品特色"
-          class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"></textarea>
-      </div>
-
-      <!-- 價格 -->
-      <div>
-        <label class="block text-sm font-semibold text-slate-700 mb-1">價格（台幣）*</label>
-        <div class="relative">
-          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-bold">NT$</span>
-          <input id="f-price" type="number" min="0" required placeholder="1000"
-            class="w-full border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"/>
+  <!-- ===== 主後台 ===== -->
+  <div id="admin-panel" class="hidden">
+    <!-- 頂部 -->
+    <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+      <div class="flex items-center gap-3">
+        <div class="bg-primary text-white p-1.5 rounded-lg">
+          <span class="material-symbols-outlined text-xl">medical_services</span>
         </div>
+        <span class="font-black text-primary text-lg">仲暘後台管理</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="index.html" target="_blank" class="text-sm text-primary flex items-center gap-1 hover:underline">
+          <span class="material-symbols-outlined text-base">open_in_new</span>前往網站
+        </a>
+        <button onclick="doLogout()" class="text-sm text-slate-500 flex items-center gap-1 hover:text-red-500">
+          <span class="material-symbols-outlined text-base">logout</span>登出
+        </button>
+      </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 py-8">
+
+      <!-- 新增產品按鈕 -->
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-slate-800">產品管理</h2>
+        <button onclick="openForm()"
+          class="bg-primary text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-primary/90 transition">
+          <span class="material-symbols-outlined text-base">add</span>新增產品
+        </button>
       </div>
 
-      <!-- 圖片上傳 -->
-      <div>
-        <label class="block text-sm font-semibold text-slate-700 mb-1">產品圖片</label>
-        <div id="drop-zone"
-          class="border-2 border-dashed border-slate-200 rounded-xl p-5 text-center cursor-pointer hover:border-primary/50 transition"
-          onclick="document.getElementById('f-image').click()">
-          <input id="f-image" type="file" accept="image/*" class="hidden" onchange="previewImage(event)"/>
-          <div id="drop-hint">
-            <span class="material-symbols-outlined text-4xl text-slate-300">add_photo_alternate</span>
-            <p class="text-sm text-slate-400 mt-1">點此選擇圖片</p>
-            <p class="text-xs text-slate-300">支援 JPG、PNG、WEBP</p>
-          </div>
-          <div id="img-preview" class="hidden">
-            <img id="preview-img" class="max-h-40 mx-auto rounded-lg object-cover"/>
-            <p class="text-xs text-slate-400 mt-2">點此換圖</p>
+      <!-- 載入中提示 -->
+      <div id="loading" class="text-center py-20 text-slate-400">
+        <span class="material-symbols-outlined text-5xl animate-spin">refresh</span>
+        <p class="mt-3">載入中...</p>
+      </div>
+
+      <!-- 產品列表 -->
+      <div id="product-list" class="hidden grid grid-cols-1 gap-4"></div>
+
+      <!-- 空白提示 -->
+      <div id="empty-state" class="hidden text-center py-20 text-slate-400">
+        <span class="material-symbols-outlined text-5xl">inventory_2</span>
+        <p class="mt-3 text-lg font-medium">尚無產品</p>
+        <p class="text-sm">點上方「新增產品」來上架第一個商品吧！</p>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ===== 新增/編輯 表單 Modal ===== -->
+  <div id="modal"
+    class="hidden fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-10 pb-10 overflow-y-auto">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4">
+      <div class="flex items-center justify-between px-6 py-4 border-b">
+        <h3 id="modal-title" class="text-lg font-bold text-slate-800">新增產品</h3>
+        <button onclick="closeForm()" class="text-slate-400 hover:text-slate-700">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <form id="product-form" onsubmit="saveProduct(event)" class="px-6 py-5 space-y-4">
+        <input type="hidden" id="edit-id" />
+
+        <!-- 產品名稱 -->
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">產品名稱 *</label>
+          <input id="f-name" type="text" required placeholder="例：碳纖維輕便助行車"
+            class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+        </div>
+
+        <!-- 產品簡介 -->
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">產品簡介</label>
+          <textarea id="f-desc" rows="2" placeholder="簡短描述產品特色"
+            class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"></textarea>
+        </div>
+
+        <!-- 價格 -->
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">價格（台幣）*</label>
+          <div class="relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-bold">NT$</span>
+            <input id="f-price" type="number" min="0" required placeholder="1000"
+              class="w-full border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
           </div>
         </div>
-        <!-- 現有圖片網址（編輯時顯示） -->
-        <div id="current-img-box" class="hidden mt-2">
-          <p class="text-xs text-slate-400 mb-1">目前圖片：</p>
-          <img id="current-img" class="h-20 rounded-lg object-cover border border-slate-200"/>
-          <p class="text-xs text-slate-300 mt-1">若不換圖，不需重新上傳</p>
-        </div>
-      </div>
 
-      <!-- 標籤 -->
-      <div class="grid grid-cols-2 gap-4">
+        <!-- 圖片上傳 -->
         <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-1">標籤文字</label>
-          <input id="f-badge" type="text" placeholder="例：暢銷排行（可留空）"
-            class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"/>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">產品圖片</label>
+          <div id="drop-zone"
+            class="border-2 border-dashed border-slate-200 rounded-xl p-5 text-center cursor-pointer hover:border-primary/50 transition"
+            onclick="document.getElementById('f-image').click()">
+            <input id="f-image" type="file" accept="image/*" class="hidden" onchange="previewImage(event)" />
+            <div id="drop-hint">
+              <span class="material-symbols-outlined text-4xl text-slate-300">add_photo_alternate</span>
+              <p class="text-sm text-slate-400 mt-1">點此選擇圖片</p>
+              <p class="text-xs text-slate-300">支援 JPG、PNG、WEBP</p>
+            </div>
+            <div id="img-preview" class="hidden">
+              <img id="preview-img" class="max-h-40 mx-auto rounded-lg object-cover" />
+              <p class="text-xs text-slate-400 mt-2">點此換圖</p>
+            </div>
+          </div>
+          <!-- 現有圖片網址（編輯時顯示） -->
+          <div id="current-img-box" class="hidden mt-2">
+            <p class="text-xs text-slate-400 mb-1">目前圖片：</p>
+            <img id="current-img" class="h-20 rounded-lg object-cover border border-slate-200" />
+            <p class="text-xs text-slate-300 mt-1">若不換圖，不需重新上傳</p>
+          </div>
         </div>
-        <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-1">標籤顏色</label>
-          <select id="f-badge-type"
-            class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
-            <option value="primary">藍色</option>
-            <option value="coral">橘紅色</option>
-          </select>
-        </div>
-      </div>
 
-      <!-- 星星＋評論數 -->
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-1">星星評分</label>
-          <select id="f-rating"
-            class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
-            <option value="5">★★★★★（5顆）</option>
-            <option value="4">★★★★☆（4顆）</option>
-            <option value="3">★★★☆☆（3顆）</option>
-            <option value="2">★★☆☆☆（2顆）</option>
-            <option value="1">★☆☆☆☆（1顆）</option>
-          </select>
+        <!-- 標籤 -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">標籤文字</label>
+            <input id="f-badge" type="text" placeholder="例：暢銷排行（可留空）"
+              class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">標籤顏色</label>
+            <select id="f-badge-type"
+              class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
+              <option value="primary">藍色</option>
+              <option value="coral">橘紅色</option>
+            </select>
+          </div>
         </div>
-        <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-1">評論數量</label>
-          <input id="f-reviews" type="number" min="0" placeholder="0"
-            class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"/>
-        </div>
-      </div>
 
-      <!-- 送出 -->
-      <div class="flex gap-3 pt-2">
-        <button type="button" onclick="closeForm()"
-          class="flex-1 border border-slate-200 text-slate-600 font-bold py-3 rounded-xl hover:bg-slate-50 transition">
+        <!-- 星星＋評論數 -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">星星評分</label>
+            <select id="f-rating"
+              class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
+              <option value="5">★★★★★（5顆）</option>
+              <option value="4">★★★★☆（4顆）</option>
+              <option value="3">★★★☆☆（3顆）</option>
+              <option value="2">★★☆☆☆（2顆）</option>
+              <option value="1">★☆☆☆☆（1顆）</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">評論數量</label>
+            <input id="f-reviews" type="number" min="0" placeholder="0"
+              class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+          </div>
+        </div>
+
+        <!-- 送出 -->
+        <div class="flex gap-3 pt-2">
+          <button type="button" onclick="closeForm()"
+            class="flex-1 border border-slate-200 text-slate-600 font-bold py-3 rounded-xl hover:bg-slate-50 transition">
+            取消
+          </button>
+          <button type="submit" id="save-btn"
+            class="flex-1 bg-primary text-white font-bold py-3 rounded-xl hover:bg-primary/90 transition flex items-center justify-center gap-2">
+            <span id="save-icon" class="material-symbols-outlined text-base">save</span>
+            <span id="save-text">儲存產品</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== 刪除確認 Modal ===== -->
+  <div id="delete-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-6 text-center">
+      <span class="material-symbols-outlined text-5xl text-red-400">delete_forever</span>
+      <h3 class="text-lg font-bold mt-3 mb-1">確定要刪除？</h3>
+      <p id="delete-name" class="text-slate-500 text-sm mb-6"></p>
+      <div class="flex gap-3">
+        <button onclick="closeDeleteModal()"
+          class="flex-1 border border-slate-200 text-slate-600 font-bold py-2.5 rounded-xl hover:bg-slate-50">
           取消
         </button>
-        <button type="submit" id="save-btn"
-          class="flex-1 bg-primary text-white font-bold py-3 rounded-xl hover:bg-primary/90 transition flex items-center justify-center gap-2">
-          <span id="save-icon" class="material-symbols-outlined text-base">save</span>
-          <span id="save-text">儲存產品</span>
+        <button onclick="confirmDelete()"
+          class="flex-1 bg-red-500 text-white font-bold py-2.5 rounded-xl hover:bg-red-600">
+          確定刪除
         </button>
       </div>
-    </form>
-  </div>
-</div>
-
-<!-- ===== 刪除確認 Modal ===== -->
-<div id="delete-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-6 text-center">
-    <span class="material-symbols-outlined text-5xl text-red-400">delete_forever</span>
-    <h3 class="text-lg font-bold mt-3 mb-1">確定要刪除？</h3>
-    <p id="delete-name" class="text-slate-500 text-sm mb-6"></p>
-    <div class="flex gap-3">
-      <button onclick="closeDeleteModal()"
-        class="flex-1 border border-slate-200 text-slate-600 font-bold py-2.5 rounded-xl hover:bg-slate-50">
-        取消
-      </button>
-      <button onclick="confirmDelete()"
-        class="flex-1 bg-red-500 text-white font-bold py-2.5 rounded-xl hover:bg-red-600">
-        確定刪除
-      </button>
     </div>
   </div>
-</div>
 
-<!-- 成功提示 -->
-<div id="toast" class="hidden fixed bottom-6 right-6 bg-green-500 text-white px-5 py-3 rounded-xl shadow-lg text-sm font-bold flex items-center gap-2 z-50">
-  <span class="material-symbols-outlined text-base">check_circle</span>
-  <span id="toast-msg"></span>
-</div>
+  <!-- 成功提示 -->
+  <div id="toast"
+    class="hidden fixed bottom-6 right-6 bg-green-500 text-white px-5 py-3 rounded-xl shadow-lg text-sm font-bold flex items-center gap-2 z-50">
+    <span class="material-symbols-outlined text-base">check_circle</span>
+    <span id="toast-msg"></span>
+  </div>
 
-<script src="config.js"></script>
-<script>
-// ===== Supabase 初始化 =====
-const { createClient } = supabase;
-const sb = createClient(SITE_CONFIG.supabase.url, SITE_CONFIG.supabase.anonKey);
+  <script src="config.js"></script>
+  <script>
+    // ===== Supabase 初始化 =====
+    const { createClient } = supabase;
+    const sb = createClient(SITE_CONFIG.supabase.url, SITE_CONFIG.supabase.anonKey);
 
-// ===== 登入 =====
-function doLogin() {
-  const pw = document.getElementById("pw-input").value;
-  if (pw === SITE_CONFIG.adminPassword) {
-    sessionStorage.setItem("admin_ok", "1");
-    document.getElementById("login-screen").classList.add("hidden");
-    document.getElementById("admin-panel").classList.remove("hidden");
-    loadProducts();
-  } else {
-    document.getElementById("pw-error").classList.remove("hidden");
-  }
-}
-document.getElementById("pw-input").addEventListener("keydown", e => {
-  if (e.key === "Enter") doLogin();
-});
+    // ===== 登入 =====
+    async function doLogin() {
+      const email = document.getElementById("admin-email").value.trim();
+      const password = document.getElementById("admin-password").value;
+      const errEl = document.getElementById("pw-error");
+      errEl.classList.add("hidden");
 
-function doLogout() {
-  sessionStorage.removeItem("admin_ok");
-  location.reload();
-}
+      if (!email || !password) {
+        errEl.textContent = "請填寫電子郵件與密碼";
+        errEl.classList.remove("hidden");
+        return;
+      }
 
-// 若已登入直接進入
-if (sessionStorage.getItem("admin_ok")) {
-  document.getElementById("login-screen").classList.add("hidden");
-  document.getElementById("admin-panel").classList.remove("hidden");
-  loadProducts();
-}
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) {
+        errEl.textContent = "電子郵件或密碼錯誤";
+        errEl.classList.remove("hidden");
+        return;
+      }
 
-// ===== 載入產品列表 =====
-async function loadProducts() {
-  document.getElementById("loading").classList.remove("hidden");
-  document.getElementById("product-list").classList.add("hidden");
-  document.getElementById("empty-state").classList.add("hidden");
+      // 查 admins 資料表確認是否為管理員
+      const { data: adminRow } = await sb
+        .from("admins")
+        .select("user_id")
+        .eq("user_id", data.user.id)
+        .maybeSingle();
 
-  const { data, error } = await sb
-    .from("products")
-    .select("*")
-    .order("created_at", { ascending: false });
+      if (!adminRow) {
+        await sb.auth.signOut();
+        errEl.textContent = "此帳號沒有管理員權限";
+        errEl.classList.remove("hidden");
+        return;
+      }
 
-  document.getElementById("loading").classList.add("hidden");
+      showAdminPanel();
+    }
 
-  if (error) {
-    alert("讀取失敗：" + error.message + "\n\n請確認 config.js 的 Supabase 設定是否正確。");
-    return;
-  }
+    document.addEventListener("keydown", e => {
+      if (e.key === "Enter" && !document.getElementById("login-screen").classList.contains("hidden")) doLogin();
+    });
 
-  if (!data || data.length === 0) {
-    document.getElementById("empty-state").classList.remove("hidden");
-    return;
-  }
+    async function doLogout() {
+      await sb.auth.signOut();
+      location.reload();
+    }
 
-  const list = document.getElementById("product-list");
-  list.innerHTML = "";
-  data.forEach(p => {
-    const stars = Array.from({length:5}, (_,i) =>
-      `<span class="text-${i < p.rating ? 'yellow-400' : 'slate-300'} text-xs">★</span>`
-    ).join("");
-    list.insertAdjacentHTML("beforeend", `
+    function showAdminPanel() {
+      document.getElementById("login-screen").classList.add("hidden");
+      document.getElementById("admin-panel").classList.remove("hidden");
+      loadProducts();
+    }
+
+    // 若已有 session，查表確認是管理員才進入
+    sb.auth.getSession().then(async ({ data: { session } }) => {
+      if (!session) return;
+      const { data: adminRow } = await sb
+        .from("admins")
+        .select("user_id")
+        .eq("user_id", session.user.id)
+        .maybeSingle();
+      if (adminRow) showAdminPanel();
+    });
+
+    // ===== 載入產品列表 =====
+    async function loadProducts() {
+      document.getElementById("loading").classList.remove("hidden");
+      document.getElementById("product-list").classList.add("hidden");
+      document.getElementById("empty-state").classList.add("hidden");
+
+      const { data, error } = await sb
+        .from("products")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      document.getElementById("loading").classList.add("hidden");
+
+      if (error) {
+        alert("讀取失敗：" + error.message + "\n\n請確認 config.js 的 Supabase 設定是否正確。");
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        document.getElementById("empty-state").classList.remove("hidden");
+        return;
+      }
+
+      const list = document.getElementById("product-list");
+      list.innerHTML = "";
+      data.forEach(p => {
+        const stars = Array.from({ length: 5 }, (_, i) =>
+          `<span class="text-${i < p.rating ? 'yellow-400' : 'slate-300'} text-xs">★</span>`
+        ).join("");
+        list.insertAdjacentHTML("beforeend", `
       <div class="bg-white rounded-xl border border-slate-100 shadow-sm flex items-center gap-4 px-5 py-4">
         <img src="${p.image_url || 'https://via.placeholder.com/80x80?text=無圖'}"
           class="w-16 h-16 rounded-lg object-cover border border-slate-100 shrink-0"/>
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2">
             <h4 class="font-bold text-slate-800 truncate">${p.name}</h4>
-            ${p.badge ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded ${p.badge_type==='coral'?'bg-orange-100 text-orange-600':'bg-blue-100 text-blue-700'}">${p.badge}</span>` : ""}
+            ${p.badge ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded ${p.badge_type === 'coral' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-700'}">${p.badge}</span>` : ""}
           </div>
           <p class="text-slate-400 text-xs truncate mt-0.5">${p.description || ""}</p>
           <div class="flex items-center gap-2 mt-1">
@@ -315,161 +355,162 @@ async function loadProducts() {
             class="p-2 rounded-lg hover:bg-primary/10 text-primary transition">
             <span class="material-symbols-outlined text-lg">edit</span>
           </button>
-          <button onclick="openDeleteModal('${p.id}','${p.name.replace(/'/g,"\\'")}','${p.image_url || ""}')"
+          <button onclick="openDeleteModal('${p.id}','${p.name.replace(/'/g, "\\'")}','${p.image_url || ""}')"
             class="p-2 rounded-lg hover:bg-red-50 text-red-400 transition">
             <span class="material-symbols-outlined text-lg">delete</span>
           </button>
         </div>
       </div>
     `);
-  });
-  list.classList.remove("hidden");
-}
-
-// ===== 表單開關 =====
-let currentImageUrl = "";
-
-function openForm(product = null) {
-  document.getElementById("modal").classList.remove("hidden");
-  document.getElementById("edit-id").value = product ? product.id : "";
-  document.getElementById("modal-title").textContent = product ? "編輯產品" : "新增產品";
-  document.getElementById("f-name").value = product ? product.name : "";
-  document.getElementById("f-desc").value = product ? (product.description || "") : "";
-  document.getElementById("f-price").value = product ? product.price : "";
-  document.getElementById("f-badge").value = product ? (product.badge || "") : "";
-  document.getElementById("f-badge-type").value = product ? (product.badge_type || "primary") : "primary";
-  document.getElementById("f-rating").value = product ? product.rating : "5";
-  document.getElementById("f-reviews").value = product ? product.reviews : "0";
-
-  // 重置圖片預覽
-  document.getElementById("f-image").value = "";
-  document.getElementById("drop-hint").classList.remove("hidden");
-  document.getElementById("img-preview").classList.add("hidden");
-  currentImageUrl = product ? (product.image_url || "") : "";
-
-  const curBox = document.getElementById("current-img-box");
-  if (product && product.image_url) {
-    document.getElementById("current-img").src = product.image_url;
-    curBox.classList.remove("hidden");
-  } else {
-    curBox.classList.add("hidden");
-  }
-}
-
-function closeForm() {
-  document.getElementById("modal").classList.add("hidden");
-}
-
-function previewImage(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const url = URL.createObjectURL(file);
-  document.getElementById("preview-img").src = url;
-  document.getElementById("drop-hint").classList.add("hidden");
-  document.getElementById("img-preview").classList.remove("hidden");
-  document.getElementById("current-img-box").classList.add("hidden");
-}
-
-// ===== 儲存產品 =====
-async function saveProduct(e) {
-  e.preventDefault();
-  const btn = document.getElementById("save-btn");
-  const icon = document.getElementById("save-icon");
-  const text = document.getElementById("save-text");
-  btn.disabled = true;
-  icon.textContent = "hourglass_empty";
-  text.textContent = "儲存中...";
-
-  let imageUrl = currentImageUrl;
-
-  // 若有新圖片，先上傳
-  const fileInput = document.getElementById("f-image");
-  if (fileInput.files[0]) {
-    const file = fileInput.files[0];
-    const ext = file.name.split(".").pop();
-    const filename = `${Date.now()}.${ext}`;
-    const { data: upData, error: upErr } = await sb.storage
-      .from("product-images")
-      .upload(filename, file, { upsert: true });
-    if (upErr) {
-      alert("圖片上傳失敗：" + upErr.message);
-      resetSaveBtn(); return;
+      });
+      list.classList.remove("hidden");
     }
-    const { data: urlData } = sb.storage.from("product-images").getPublicUrl(filename);
-    imageUrl = urlData.publicUrl;
-  }
 
-  const payload = {
-    name: document.getElementById("f-name").value.trim(),
-    description: document.getElementById("f-desc").value.trim(),
-    price: parseInt(document.getElementById("f-price").value),
-    image_url: imageUrl,
-    badge: document.getElementById("f-badge").value.trim(),
-    badge_type: document.getElementById("f-badge-type").value,
-    rating: parseInt(document.getElementById("f-rating").value),
-    reviews: parseInt(document.getElementById("f-reviews").value) || 0,
-  };
+    // ===== 表單開關 =====
+    let currentImageUrl = "";
 
-  const editId = document.getElementById("edit-id").value;
-  let error;
-  if (editId) {
-    ({ error } = await sb.from("products").update(payload).eq("id", editId));
-  } else {
-    ({ error } = await sb.from("products").insert(payload));
-  }
+    function openForm(product = null) {
+      document.getElementById("modal").classList.remove("hidden");
+      document.getElementById("edit-id").value = product ? product.id : "";
+      document.getElementById("modal-title").textContent = product ? "編輯產品" : "新增產品";
+      document.getElementById("f-name").value = product ? product.name : "";
+      document.getElementById("f-desc").value = product ? (product.description || "") : "";
+      document.getElementById("f-price").value = product ? product.price : "";
+      document.getElementById("f-badge").value = product ? (product.badge || "") : "";
+      document.getElementById("f-badge-type").value = product ? (product.badge_type || "primary") : "primary";
+      document.getElementById("f-rating").value = product ? product.rating : "5";
+      document.getElementById("f-reviews").value = product ? product.reviews : "0";
 
-  if (error) {
-    alert("儲存失敗：" + error.message);
-    resetSaveBtn(); return;
-  }
+      // 重置圖片預覽
+      document.getElementById("f-image").value = "";
+      document.getElementById("drop-hint").classList.remove("hidden");
+      document.getElementById("img-preview").classList.add("hidden");
+      currentImageUrl = product ? (product.image_url || "") : "";
 
-  closeForm();
-  showToast(editId ? "產品已更新！" : "產品已新增！");
-  loadProducts();
-  resetSaveBtn();
-}
+      const curBox = document.getElementById("current-img-box");
+      if (product && product.image_url) {
+        document.getElementById("current-img").src = product.image_url;
+        curBox.classList.remove("hidden");
+      } else {
+        curBox.classList.add("hidden");
+      }
+    }
 
-function resetSaveBtn() {
-  const btn = document.getElementById("save-btn");
-  document.getElementById("save-icon").textContent = "save";
-  document.getElementById("save-text").textContent = "儲存產品";
-  btn.disabled = false;
-}
+    function closeForm() {
+      document.getElementById("modal").classList.add("hidden");
+    }
 
-// ===== 刪除 =====
-let deleteId = "", deleteImgPath = "";
+    function previewImage(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      document.getElementById("preview-img").src = url;
+      document.getElementById("drop-hint").classList.add("hidden");
+      document.getElementById("img-preview").classList.remove("hidden");
+      document.getElementById("current-img-box").classList.add("hidden");
+    }
 
-function openDeleteModal(id, name, imgUrl) {
-  deleteId = id;
-  deleteImgPath = imgUrl;
-  document.getElementById("delete-name").textContent = "「" + name + "」";
-  document.getElementById("delete-modal").classList.remove("hidden");
-}
-function closeDeleteModal() {
-  document.getElementById("delete-modal").classList.add("hidden");
-}
-async function confirmDelete() {
-  const { error } = await sb.from("products").delete().eq("id", deleteId);
-  if (error) { alert("刪除失敗：" + error.message); return; }
+    // ===== 儲存產品 =====
+    async function saveProduct(e) {
+      e.preventDefault();
+      const btn = document.getElementById("save-btn");
+      const icon = document.getElementById("save-icon");
+      const text = document.getElementById("save-text");
+      btn.disabled = true;
+      icon.textContent = "hourglass_empty";
+      text.textContent = "儲存中...";
 
-  // 嘗試刪除 Storage 圖片（忽略錯誤）
-  if (deleteImgPath) {
-    const parts = deleteImgPath.split("/product-images/");
-    if (parts[1]) await sb.storage.from("product-images").remove([parts[1]]);
-  }
+      let imageUrl = currentImageUrl;
 
-  closeDeleteModal();
-  showToast("產品已刪除");
-  loadProducts();
-}
+      // 若有新圖片，先上傳
+      const fileInput = document.getElementById("f-image");
+      if (fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const ext = file.name.split(".").pop();
+        const filename = `${Date.now()}.${ext}`;
+        const { data: upData, error: upErr } = await sb.storage
+          .from("product-images")
+          .upload(filename, file, { upsert: true });
+        if (upErr) {
+          alert("圖片上傳失敗：" + upErr.message);
+          resetSaveBtn(); return;
+        }
+        const { data: urlData } = sb.storage.from("product-images").getPublicUrl(filename);
+        imageUrl = urlData.publicUrl;
+      }
 
-// ===== Toast 提示 =====
-function showToast(msg) {
-  const t = document.getElementById("toast");
-  document.getElementById("toast-msg").textContent = msg;
-  t.classList.remove("hidden");
-  setTimeout(() => t.classList.add("hidden"), 3000);
-}
-</script>
+      const payload = {
+        name: document.getElementById("f-name").value.trim(),
+        description: document.getElementById("f-desc").value.trim(),
+        price: parseInt(document.getElementById("f-price").value),
+        image_url: imageUrl,
+        badge: document.getElementById("f-badge").value.trim(),
+        badge_type: document.getElementById("f-badge-type").value,
+        rating: parseInt(document.getElementById("f-rating").value),
+        reviews: parseInt(document.getElementById("f-reviews").value) || 0,
+      };
+
+      const editId = document.getElementById("edit-id").value;
+      let error;
+      if (editId) {
+        ({ error } = await sb.from("products").update(payload).eq("id", editId));
+      } else {
+        ({ error } = await sb.from("products").insert(payload));
+      }
+
+      if (error) {
+        alert("儲存失敗：" + error.message);
+        resetSaveBtn(); return;
+      }
+
+      closeForm();
+      showToast(editId ? "產品已更新！" : "產品已新增！");
+      loadProducts();
+      resetSaveBtn();
+    }
+
+    function resetSaveBtn() {
+      const btn = document.getElementById("save-btn");
+      document.getElementById("save-icon").textContent = "save";
+      document.getElementById("save-text").textContent = "儲存產品";
+      btn.disabled = false;
+    }
+
+    // ===== 刪除 =====
+    let deleteId = "", deleteImgPath = "";
+
+    function openDeleteModal(id, name, imgUrl) {
+      deleteId = id;
+      deleteImgPath = imgUrl;
+      document.getElementById("delete-name").textContent = "「" + name + "」";
+      document.getElementById("delete-modal").classList.remove("hidden");
+    }
+    function closeDeleteModal() {
+      document.getElementById("delete-modal").classList.add("hidden");
+    }
+    async function confirmDelete() {
+      const { error } = await sb.from("products").delete().eq("id", deleteId);
+      if (error) { alert("刪除失敗：" + error.message); return; }
+
+      // 嘗試刪除 Storage 圖片（忽略錯誤）
+      if (deleteImgPath) {
+        const parts = deleteImgPath.split("/product-images/");
+        if (parts[1]) await sb.storage.from("product-images").remove([parts[1]]);
+      }
+
+      closeDeleteModal();
+      showToast("產品已刪除");
+      loadProducts();
+    }
+
+    // ===== Toast 提示 =====
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      document.getElementById("toast-msg").textContent = msg;
+      t.classList.remove("hidden");
+      setTimeout(() => t.classList.add("hidden"), 3000);
+    }
+  </script>
 </body>
+
 </html>
